@@ -10,7 +10,12 @@
     "outDir": "dist",
     "rootDir": "src",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "claude-status-mcp": ["./node_modules/claude-status-mcp/dist/index.d.ts"],
+      "codex-status-mcp": ["./node_modules/codex-status-mcp/dist/index.d.ts"],
+      "copilot-status-mcp": ["./node_modules/copilot-status-mcp/dist/index.d.ts"]
+    }
   },
   "include": ["src/**/*.ts"]
 }
