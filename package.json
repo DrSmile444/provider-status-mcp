@@ -1,6 +1,6 @@
 {
   "name": "provider-status-mcp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "MCP server and CLI that aggregates Claude, Codex, and Copilot status into a single view.",
   "type": "module",
   "main": "dist/index.js",
@@ -51,9 +51,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
-    "claude-status-mcp": "file:../claude-usage-mcp",
-    "codex-status-mcp": "file:../codex-status-mcp",
-    "copilot-status-mcp": "file:../copilot-status-mcp"
+    "claude-status-mcp": "^0.4.0",
+    "codex-status-mcp": "^0.4.0",
+    "copilot-status-mcp": "^0.3.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.19",
