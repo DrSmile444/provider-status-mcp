@@ -12,12 +12,12 @@ claude mcp add --scope user provider-status-mcp -- npx -y provider-status-mcp --
 
 ## Features
 
-- Fetches Claude, Codex, and Copilot status in parallel.
+- Fetches Claude, Codex, and Copilot status in parallel using their SDKs — no subprocess spawning.
 - Quick-glance box at the top showing all three providers at once with progress bars.
 - `--pretty` flag for a detailed human-readable summary.
 - Single MCP tool `get_provider_status` — lets an LLM check all providers in one call.
 - Graceful degradation: a provider that fails or isn't configured is shown as unavailable.
-- Each provider's CLI is invoked separately — no cross-provider coupling.
+- Programmatic API: import `fetchAllProviders()` directly in your own code.
 
 ## Quick Start
 
@@ -99,6 +99,34 @@ Options:
   --help, -h             Show help.
 ```
 
+## Programmatic Usage
+
+Install and import directly in your own code:
+
+```sh
+npm install provider-status-mcp
+```
+
+```typescript
+import { fetchAllProviders } from "provider-status-mcp";
+
+const { claude, codex, copilot } = await fetchAllProviders();
+
+if (!copilot.available) {
+  console.log(`Copilot rate limited, resets ${copilot.primaryWindow?.resetsAt}`);
+}
+
+// Pick the first available provider
+const available = [claude, codex, copilot].find(p => p.available);
+console.log(`Use ${available?.name}`);
+```
+
+The package exports:
+- `fetchAllProviders(options?)` — fetches all three providers in parallel; returns `AllProvidersResult`
+- Types: `AllProvidersResult`, `ProviderStatus`, `RateWindow`, `FetchOptions`
+
+Each provider SDK is called directly (no subprocess spawning), so errors surface as typed exceptions.
+
 ## MCP Setup
 
 The MCP server exposes one tool: `get_provider_status`.
@@ -128,29 +156,18 @@ Equivalent MCP JSON:
 }
 ```
 
-## Provider Command Overrides
-
-By default, each provider is invoked as `npx -y <package-name>`. Override with env vars:
-
-```sh
-CLAUDE_STATUS_CMD="node /path/to/claude-status-mcp/dist/cli.js"
-CODEX_STATUS_CMD="node /path/to/codex-status-mcp/dist/cli.js"
-COPILOT_STATUS_CMD="node /path/to/copilot-status-mcp/dist/cli.js"
-```
-
-Useful for local development before the packages are published.
-
 ## Local Development
 
 ```sh
 npm install
 npm run build
 
-# With local provider CLIs:
-CLAUDE_STATUS_CMD="node ../claude-usage-mcp/dist/cli.js" \
-CODEX_STATUS_CMD="node ../codex-status-mcp/dist/cli.js" \
-COPILOT_STATUS_CMD="node ../copilot-status-mcp/dist/cli.js" \
-node dist/cli.js --pretty
+# The package.json uses file: references to local siblings during development:
+# "claude-status-mcp": "file:../claude-usage-mcp"
+# "codex-status-mcp":  "file:../codex-status-mcp"
+# "copilot-status-mcp": "file:../copilot-status-mcp"
+# When publishing, replace these with real version ranges.
+npm run status:pretty
 ```
 
 ## Related Packages
