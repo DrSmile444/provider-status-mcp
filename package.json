@@ -1,6 +1,6 @@
 {
   "name": "provider-status-mcp",
-  "version": "0.3.9",
+  "version": "0.4.0",
   "description": "MCP server and CLI that aggregates Claude, Codex, and Copilot status into a single view.",
   "type": "module",
   "main": "dist/index.js",
